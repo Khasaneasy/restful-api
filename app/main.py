@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException, status
 from databases import Database
+from datetime import datetime
 from sqlalchemy import create_engine, MetaData
 
 from app.config import settings
@@ -33,3 +34,28 @@ async def register_user(user: schemas.UserCreate):
     created_user = await crud.create_user(database, user_data)
 
     return created_user
+
+
+@app.post('/referral-code', response_model=schemas.ReferralCodeResponse)
+async def create_code(owner_id: int, code: str, expires_at: datetime,
+                      database=Depends(database)):
+    await crud.delete_referral_code(
+        database,
+        owner_id
+    )
+    return await crud.create_referral_code(database,
+                                           owner_id, code,
+                                           expires_at)
+
+
+@app.get('/referral-code', response_model=schemas.ReferralCodeResponse)
+async def get_code(email: str, database=Depends(database)):
+    referral_code = await crud.get_referral_code_by_email(database, email)
+    if not referral_code:
+        raise HTTPException(status_code=404, detail="Referral code not found")
+    return referral_code
+
+
+@app.delete('/referral-code', status_code=204)
+async def delete_code(owner_id: int, database=Depends(database)):
+    await crud.delete_referral_code(database, owner_id)

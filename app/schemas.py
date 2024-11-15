@@ -20,7 +20,7 @@ class ReferalCode(BaseModel):
     expires_at: datetime
 
 
-class ReferalCodeResponse(BaseModel):
+class ReferralCodeResponse(BaseModel):
     code: str
     owner_id: int
     expires_at: datetime
