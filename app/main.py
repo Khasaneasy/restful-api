@@ -59,3 +59,7 @@ async def get_code(email: str, database=Depends(database)):
 @app.delete('/referral-code', status_code=204)
 async def delete_code(owner_id: int, database=Depends(database)):
     await crud.delete_referral_code(database, owner_id)
+
+
+# Здравствуйте прошу вас учесть, что фреймворк FastAPI является для меня еще темным лесом.
+# С Уважением Хасан
